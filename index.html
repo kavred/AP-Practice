@@ -12,7 +12,29 @@
 </head>
 <body>
     <div class="app-container">
-        <header class="top-bar">
+        <div class="start-screen" id="startScreen">
+            <div class="start-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+            <h1 class="start-title">AP History Study Tool</h1>
+            <p class="start-desc">A modern, web-based flashcard tool to help you master the "Must Know" dates and events for AP European History!</p>
+            <div class="period-selector">
+                <label for="periodSelect">Select a Period to Practice:</label>
+                <select id="periodSelect">
+                    <option value="all">All Periods (1450 - present)</option>
+                    <option value="1">Period 1 (1450 - 1648)</option>
+                    <option value="2">Period 2 (1648 - 1815)</option>
+                    <option value="3">Period 3 (1815 - 1914)</option>
+                    <option value="4">Period 4 (1914 - present)</option>
+                </select>
+            </div>
+            <button class="btn btn-start" id="startBtn">
+                <i class="fa-solid fa-play"></i> Start Studying
+            </button>
+        </div>
+
+        <header class="top-bar hidden" id="topBar">
+            <button class="btn-home" id="homeBtn" title="Return Home">
+                <i class="fa-solid fa-house"></i>
+            </button>
             <div class="timer-badge">
                 <i class="fa-regular fa-clock"></i>
                 <span id="timerText">00:00</span>
@@ -24,7 +46,7 @@
             </div>
         </header>
 
-        <main class="flashcard-area">
+        <main class="flashcard-area hidden" id="flashcardArea">
             <div class="flashcard" id="flashcard">
                 <div class="card-image">
                     <i class="fa-solid fa-landmark dome-icon"></i>
@@ -38,7 +60,7 @@
             </div>
         </main>
 
-        <footer class="controls">
+        <footer class="controls hidden" id="controlsArea">
             <button class="btn btn-hint" id="hintBtn" title="Get a Hint">
                 <i class="fa-solid fa-lightbulb"></i>
             </button>

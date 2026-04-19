@@ -312,3 +312,114 @@ input[type="text"]::placeholder {
 .btn-restart:hover {
     background: #059669; /* Darker emerald */
 }
+
+/* Start Screen */
+.hidden {
+    display: none !important;
+}
+
+.start-screen {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.8);
+    border-radius: 28px;
+    box-shadow: var(--shadow-soft);
+    padding: 50px 40px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.start-icon {
+    font-size: 4rem;
+    color: var(--primary);
+    margin-bottom: 20px;
+}
+
+.start-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.5rem;
+    color: var(--primary);
+    margin-bottom: 15px;
+}
+
+.start-desc {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    margin-bottom: 30px;
+    line-height: 1.5;
+    max-width: 90%;
+}
+
+.period-selector {
+    margin-bottom: 30px;
+    width: 100%;
+    max-width: 380px;
+    text-align: left;
+}
+
+.period-selector label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--text-main);
+}
+
+.period-selector select {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 1.1rem;
+    font-family: 'Inter', sans-serif;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    outline: none;
+    background: white;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.period-selector select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+.btn-start {
+    background: var(--primary);
+    color: white;
+    width: 100%;
+    max-width: 380px;
+    justify-content: center;
+    box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.35);
+}
+
+.btn-start:hover {
+    background: var(--primary-hover);
+    box-shadow: 0 8px 24px rgba(79, 70, 229, 0.25);
+}
+
+.btn-home {
+    background: white;
+    border: none;
+    color: var(--text-muted);
+    padding: 12px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    font-size: 1.15rem;
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.2s, color 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-home:hover {
+    color: var(--primary);
+    transform: scale(1.05);
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+}
