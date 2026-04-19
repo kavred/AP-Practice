@@ -13,13 +13,6 @@ A modern, web-based flashcard study tool designed to help you quickly memorize t
 To use the study tool, visit the published GitHub pages site:
 👉 [**Access the Live Tool Here**](https://kavred.github.io/AP-Practice/)
 
-Alternatively, you can clone the repository and run it locally:
-```bash
-git clone https://github.com/kavred/AP-Practice.git
-cd AP-Practice
-open index.html
-```
-
 ## Technologies 💻
 Built simply yet beautifully using:
 - Pure HTML
