@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP History Study Tool</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="top-bar">
+            <div class="timer-badge">
+                <i class="fa-regular fa-clock"></i>
+                <span id="timerText">00:00</span>
+            </div>
+            <div class="score-badge">
+                <span class="score-label">Score:</span>
+                <span id="scoreText">0/0</span>
+                <span id="percentText" class="percent-badge">0%</span>
+            </div>
+        </header>
+
+        <main class="flashcard-area">
+            <div class="flashcard" id="flashcard">
+                <div class="card-image">
+                    <i class="fa-solid fa-landmark dome-icon"></i>
+                </div>
+                <h1 class="question-text" id="questionText">Loading...</h1>
+                
+                <div class="input-wrapper">
+                    <input type="text" id="answerInput" placeholder="Enter the year..." autocomplete="off">
+                </div>
+                <div class="hint-display" id="hintDisplay"></div>
+            </div>
+        </main>
+
+        <footer class="controls">
+            <button class="btn btn-hint" id="hintBtn" title="Get a Hint">
+                <i class="fa-solid fa-lightbulb"></i>
+            </button>
+            <button class="btn btn-check" id="checkBtn">
+                <i class="fa-solid fa-magnifying-glass"></i> Check
+            </button>
+        </footer>
+    </div>
+    
+    <div class="modal" id="finishModal">
+        <div class="modal-content">
+            <h2>Study Session Complete!</h2>
+            <p>Final Score: <span id="finalScoreText"></span></p>
+            <p>Time: <span id="finalTimeText"></span></p>
+            <button class="btn btn-restart" id="restartBtn">Play Again</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
