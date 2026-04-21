@@ -143,7 +143,7 @@ input[type="text"] {
     border: 0.25vmin solid var(--border-color);
     border-radius: 2vmin;
     outline: none;
-    transition: all 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
     background: rgba(255,255,255,0.7);
     color: var(--text-main);
 }
@@ -232,7 +232,7 @@ input[type="text"]::placeholder {
 }
 
 .shake {
-    animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
+    animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
     border-color: var(--error) !important;
     background-color: rgba(239, 68, 68, 0.05) !important;
 }
