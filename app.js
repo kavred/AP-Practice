@@ -65,10 +65,19 @@ function shuffle(array) {
     return cloned;
 }
 
-// State
+// Global State
+let studyMode = 'normal';
+
+// Normal State Elements
 let studyList = [];
 let currentIndex = 0;
 let score = 0;
+
+// Adaptive State Elements
+let adaptiveUnintroduced = [];
+let adaptiveActivePool = [];
+let currentAdaptiveItem = null;
+
 let attemptsOnCurrent = 0;
 let startTime = 0;
 let timerInterval = null;
@@ -79,8 +88,10 @@ const startScreen = document.getElementById('startScreen');
 const topBar = document.getElementById('topBar');
 const flashcardArea = document.getElementById('flashcardArea');
 const controlsArea = document.getElementById('controlsArea');
+const modeSelect = document.getElementById('modeSelect');
 const periodSelect = document.getElementById('periodSelect');
 const startBtn = document.getElementById('startBtn');
+const successNotification = document.getElementById('successNotification');
 
 const timerText = document.getElementById('timerText');
 const scoreText = document.getElementById('scoreText');
@@ -108,22 +119,40 @@ function startActivity() {
 
 // Initialize
 function init() {
+    const selectedMode = modeSelect.value;
     const selectedPeriod = periodSelect.value;
+    studyMode = selectedMode;
+    
     let filteredEvents = eventsData;
     if (selectedPeriod !== 'all') {
         filteredEvents = eventsData.filter(e => e.period === selectedPeriod);
     }
-    studyList = shuffle(filteredEvents);
     
-    currentIndex = 0;
-    score = 0;
     startTime = Date.now();
     hintsUsed = 0;
+    attemptsOnCurrent = 0;
     
     clearInterval(timerInterval);
     timerInterval = setInterval(updateTimer, 1000);
     
-    updateScore();
+    if (studyMode === 'normal') {
+        studyList = shuffle(filteredEvents);
+        currentIndex = 0;
+        score = 0;
+        updateScoreNormal();
+    } else {
+        // Prepare adaptive logic structs
+        let pool = shuffle(filteredEvents).map(e => ({ ...e, correctCount: 0 }));
+        adaptiveUnintroduced = pool;
+        adaptiveActivePool = [];
+        
+        // Grab the single first item to start!
+        if (adaptiveUnintroduced.length > 0) {
+            adaptiveActivePool.push(adaptiveUnintroduced.shift());
+        }
+        updateScoreAdaptive();
+    }
+    
     loadQuestion();
     finishModal.classList.remove('active');
     answerInput.focus();
@@ -137,28 +166,65 @@ function updateTimer() {
     timerText.textContent = `${minutes}:${seconds}`;
 }
 
-// Score
-function updateScore() {
+// Score display
+function updateScoreNormal() {
     scoreText.textContent = `${score}/${currentIndex}`;
     const percent = currentIndex === 0 ? 0 : Math.round((score / currentIndex) * 100);
     percentText.textContent = `${percent}%`;
 }
 
+function updateScoreAdaptive() {
+    const total = adaptiveActivePool.length + adaptiveUnintroduced.length;
+    const learned = Math.max(0, adaptiveActivePool.length - 1);
+    scoreText.textContent = `${learned}/${total} Learned`;
+    const percent = total === 0 ? 0 : Math.round((learned / total) * 100);
+    percentText.textContent = `${percent}%`;
+}
+
 // Load Question
 function loadQuestion() {
-    if (currentIndex >= studyList.length) {
-        endStudy();
-        return;
+    if (studyMode === 'normal') {
+        if (currentIndex >= studyList.length) {
+            endStudy();
+            return;
+        }
+        const currentItem = studyList[currentIndex];
+        displayQuestion(currentItem);
+    } else {
+        let neededItems = adaptiveActivePool.filter(e => e.correctCount < 2);
+        
+        if (neededItems.length === 0) {
+            // Cycle fully completed!
+            if (adaptiveUnintroduced.length === 0) {
+                // Out of questions - completely done!
+                triggerAdaptiveWin();
+                return;
+            } else {
+                // Advance cycle: Introduce exactly 1 new random unintroduced piece of data
+                adaptiveActivePool.push(adaptiveUnintroduced.shift());
+                // Reset internal requirement trackers for ALL active items (new requirement: complete cycle twice)
+                adaptiveActivePool.forEach(e => e.correctCount = 0);
+                
+                neededItems = adaptiveActivePool;
+                updateScoreAdaptive();
+            }
+        }
+        
+        // Pull randomly from neededItems ensuring they continue the draw!
+        const randomIndex = Math.floor(Math.random() * neededItems.length);
+        currentAdaptiveItem = neededItems[randomIndex];
+        displayQuestion(currentAdaptiveItem);
     }
+}
+
+function displayQuestion(item) {
     attemptsOnCurrent = 0;
     hintsUsed = 0;
-    const currentItem = studyList[currentIndex];
     
-    // Add brief animation out/in
     questionText.style.opacity = '0';
     
     setTimeout(() => {
-        questionText.textContent = currentItem.event;
+        questionText.textContent = item.event;
         questionText.style.opacity = '1';
         answerInput.value = '';
         answerInput.classList.remove('correct', 'shake');
@@ -173,7 +239,8 @@ function checkAnswer() {
     const userInput = answerInput.value.trim();
     if (!userInput) return;
 
-    const currentItem = studyList[currentIndex];
+    const currentItem = studyMode === 'normal' ? studyList[currentIndex] : currentAdaptiveItem;
+    
     const isCorrect = currentItem.accepted ? 
                         currentItem.accepted.includes(userInput) : 
                         userInput === currentItem.year;
@@ -182,56 +249,65 @@ function checkAnswer() {
         answerInput.classList.add('correct');
         answerInput.classList.remove('shake');
         
-        if (attemptsOnCurrent === 0) {
-            score++;
+        if (studyMode === 'normal') {
+            if (attemptsOnCurrent === 0) score++;
+            currentIndex++;
+            updateScoreNormal();
+        } else {
+            // Give them a point toward this cycle for the specific element
+            currentAdaptiveItem.correctCount++;
         }
         
-        currentIndex++;
-        updateScore();
-        
-        // Disable input briefly
         answerInput.disabled = true;
         
-        // Wait a short moment to show green success before loading next
         setTimeout(() => {
             answerInput.disabled = false;
             loadQuestion();
         }, 600);
+        
     } else {
         attemptsOnCurrent++;
         answerInput.classList.remove('shake');
-        // Trigger reflow to restart animation
         void answerInput.offsetWidth;
         answerInput.classList.add('shake');
+        // Incorrect basically skips receiving a point, and loads dynamically back into next needed items draws
     }
 }
 
 // Hint System
 function showHint() {
-    const currentItem = studyList[currentIndex];
+    const currentItem = studyMode === 'normal' ? studyList[currentIndex] : currentAdaptiveItem;
     hintsUsed++;
     
     let hintText = "";
     if (hintsUsed === 1) {
-        // Show first two digits (century)
         hintText = `Starts with ${currentItem.year.substring(0, 2)}...`;
     } else {
-        // Show all but last digit
         hintText = `It's mostly ${currentItem.year.substring(0, 3)}_`;
     }
     
     hintDisplay.textContent = hintText;
     hintDisplay.classList.add('visible');
     
-    // Penalize score if they used a hint on the first try
     if (attemptsOnCurrent === 0) {
         attemptsOnCurrent = 1; 
     }
-    
     answerInput.focus();
 }
 
-// End Game
+// Adaptive 5 Second Notification logic
+function triggerAdaptiveWin() {
+    clearInterval(timerInterval);
+    successNotification.classList.add('show');
+    
+    // Hold banner for 5 seconds
+    setTimeout(() => {
+        successNotification.classList.remove('show');
+        endStudyAdaptive();
+    }, 5000);
+}
+
+// End Game Normal
 function endStudy() {
     clearInterval(timerInterval);
     finalScoreText.textContent = `${score}/${studyList.length} (${Math.round((score / studyList.length) * 100)}%)`;
@@ -239,6 +315,15 @@ function endStudy() {
     finishModal.classList.add('active');
 }
 
+// End Game Adaptive
+function endStudyAdaptive() {
+    const total = adaptiveActivePool.length;
+    finalScoreText.textContent = `${total}/${total} Learned (100%)!`;
+    finalTimeText.textContent = timerText.textContent;
+    finishModal.classList.add('active');
+}
+
+// Escape Route
 function showStartScreen() {
     clearInterval(timerInterval);
     finishModal.classList.remove('active');
@@ -246,6 +331,7 @@ function showStartScreen() {
     topBar.classList.add('hidden');
     flashcardArea.classList.add('hidden');
     controlsArea.classList.add('hidden');
+    successNotification.classList.remove('show');
 }
 
 // Event Listeners

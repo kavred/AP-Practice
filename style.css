@@ -352,14 +352,14 @@ input[type="text"]::placeholder {
     max-width: 80vw;
 }
 
-.period-selector {
+.mode-selector, .period-selector {
     margin-bottom: 4vh;
     width: 100%;
     max-width: 50vw;
     text-align: left;
 }
 
-.period-selector label {
+.mode-selector label, .period-selector label {
     display: block;
     font-weight: 600;
     margin-bottom: 1.5vh;
@@ -367,7 +367,7 @@ input[type="text"]::placeholder {
     font-size: 2vmin;
 }
 
-.period-selector select {
+.mode-selector select, .period-selector select {
     width: 100%;
     padding: 2vh 3vw;
     font-size: 2vmin;
@@ -381,7 +381,7 @@ input[type="text"]::placeholder {
     transition: all 0.2s;
 }
 
-.period-selector select:focus {
+.mode-selector select:focus, .period-selector select:focus {
     border-color: var(--primary);
     box-shadow: 0 0 0 0.5vmin rgba(79, 70, 229, 0.1);
 }
@@ -421,4 +421,28 @@ input[type="text"]::placeholder {
     color: var(--primary);
     transform: scale(1.05);
     box-shadow: 0 1.5vh 2vh -0.5vh rgba(0,0,0,0.1);
+}
+
+.success-banner {
+    position: absolute;
+    top: 5vh;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10vh);
+    background: var(--success);
+    color: white;
+    padding: 2.5vh 4vw;
+    border-radius: 3vmin;
+    box-shadow: 0 2vh 3vh -1vh rgba(16, 185, 129, 0.4);
+    font-size: 2.5vmin;
+    font-weight: 700;
+    z-index: 200;
+    opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.success-banner.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
 }
