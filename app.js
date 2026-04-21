@@ -282,8 +282,10 @@ function showHint() {
     let hintText = "";
     if (hintsUsed === 1) {
         hintText = `Starts with ${currentItem.year.substring(0, 2)}...`;
-    } else {
+    } else if (hintsUsed === 2) {
         hintText = `It's mostly ${currentItem.year.substring(0, 3)}_`;
+    } else {
+        hintText = `The answer is ${currentItem.year}`;
     }
     
     hintDisplay.textContent = hintText;
