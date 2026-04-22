@@ -179,7 +179,7 @@ function updateTimer() {
 
 // Score display
 function updateScoreNormal() {
-    scoreText.textContent = `${score}/${currentIndex}`;
+    scoreText.textContent = `${score}/${studyList.length}`;
     const percent = currentIndex === 0 ? 0 : Math.round((score / currentIndex) * 100);
     percentText.textContent = `${percent}%`;
 }
