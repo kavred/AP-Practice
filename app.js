@@ -264,8 +264,10 @@ function checkAnswer() {
             currentIndex++;
             updateScoreNormal();
         } else {
-            // Give them a point toward this cycle for the specific element
-            currentAdaptiveItem.correctCount++;
+            // Give them a point toward this cycle ONLY if there were zero mistakes or hints utilized on this attempt!
+            if (attemptsOnCurrent === 0) {
+                currentAdaptiveItem.correctCount++;
+            }
         }
         
         answerInput.disabled = true;
