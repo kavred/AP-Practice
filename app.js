@@ -278,11 +278,15 @@ function checkAnswer() {
         }, 600);
         
     } else {
+        if (studyMode !== 'normal' && attemptsOnCurrent === 0) {
+            // A wrong answer causes the ENTIRE loop to reset for strict memory locking
+            adaptiveActivePool.forEach(e => e.correctCount = 0);
+        }
+
         attemptsOnCurrent++;
         answerInput.classList.remove('shake');
         void answerInput.offsetWidth;
         answerInput.classList.add('shake');
-        // Incorrect basically skips receiving a point, and loads dynamically back into next needed items draws
     }
 }
 
@@ -304,6 +308,10 @@ function showHint() {
     hintDisplay.classList.add('visible');
     
     if (attemptsOnCurrent === 0) {
+        if (studyMode !== 'normal') {
+            // Relying on a hint also resets the entire loop
+            adaptiveActivePool.forEach(e => e.correctCount = 0);
+        }
         attemptsOnCurrent = 1; 
     }
     answerInput.focus();
