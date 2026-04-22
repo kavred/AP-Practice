@@ -513,3 +513,23 @@ input[type="text"]::placeholder {
     visibility: visible;
     opacity: 1;
 }
+
+.validation-error {
+    color: var(--error);
+    font-size: 1.8vmin;
+    font-weight: 500;
+    position: absolute;
+    bottom: -3.5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.validation-error.show {
+    opacity: 1;
+    visibility: visible;
+}
