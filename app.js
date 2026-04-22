@@ -106,6 +106,7 @@ const finalScoreText = document.getElementById('finalScoreText');
 const finalTimeText = document.getElementById('finalTimeText');
 const restartBtn = document.getElementById('restartBtn');
 const homeBtn = document.getElementById('homeBtn');
+const validationError = document.getElementById('validationError');
 
 
 // Start Activity
@@ -248,6 +249,12 @@ function displayQuestion(item) {
 function checkAnswer() {
     const userInput = answerInput.value.trim();
     if (!userInput) return;
+
+    if (!/^\d{4}$/.test(userInput)) {
+        validationError.classList.add('show');
+        setTimeout(() => validationError.classList.remove('show'), 1200);
+        return;
+    }
 
     const currentItem = studyMode === 'normal' ? studyList[currentIndex] : currentAdaptiveItem;
     
