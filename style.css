@@ -446,3 +446,14 @@ input[type="text"]::placeholder {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
 }
+
+.version-label {
+    position: absolute;
+    bottom: 2vh;
+    right: 2vw;
+    font-size: 1.5vmin;
+    color: var(--text-muted);
+    opacity: 0.6;
+    pointer-events: none;
+    font-weight: 500;
+}
