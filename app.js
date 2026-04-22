@@ -142,7 +142,17 @@ function init() {
         updateScoreNormal();
     } else {
         // Prepare adaptive logic structs
-        let pool = shuffle(filteredEvents).map(e => ({ ...e, correctCount: 0 }));
+        let pool = [];
+        if (studyMode === 'chronological-adaptive') {
+            const sorted = [...filteredEvents].sort((a, b) => {
+                const yearA = parseInt(a.year.match(/\d+/)[0]);
+                const yearB = parseInt(b.year.match(/\d+/)[0]);
+                return yearA - yearB;
+            });
+            pool = sorted.map(e => ({ ...e, correctCount: 0 }));
+        } else {
+            pool = shuffle(filteredEvents).map(e => ({ ...e, correctCount: 0 }));
+        }
         adaptiveUnintroduced = pool;
         adaptiveActivePool = [];
         
