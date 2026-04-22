@@ -20,7 +20,17 @@
             <h1 class="start-title">AP History Study Tool</h1>
             <p class="start-desc">A modern, web-based flashcard tool to help you master the "Must Know" dates and events for AP European History!</p>
             <div class="mode-selector">
-                <label for="modeSelect">Select Study Mode:</label>
+                <label for="modeSelect" style="display: flex; justify-content: center; align-items: center; gap: 0.8vw;">
+                    Select Study Mode:
+                    <div class="info-tooltip">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <div class="tooltip-text">
+                            <strong>Normal:</strong> Standard randomized testing.<br>
+                            <strong>Random Adaptive:</strong> Rigorous loop. Must correctly answer old & newest term twice without hints/mistakes before adding more.<br>
+                            <strong>Chronological Adaptive:</strong> Same rigors as Random, but introducing new dates purely in timeline order.
+                        </div>
+                    </div>
+                </label>
                 <select id="modeSelect">
                     <option value="normal">Normal</option>
                     <option value="adaptive">Random Adaptive</option>
@@ -90,7 +100,7 @@
         </div>
     </div>
     
-    <div style="position: absolute; bottom: 2vh; right: 2vw; font-size: 1.5vmin; color: var(--text-muted); opacity: 0.6; pointer-events: none; font-weight: 500;">v02.04.03</div>
+    <div style="position: absolute; bottom: 2vh; right: 2vw; font-size: 1.5vmin; color: var(--text-muted); opacity: 0.6; pointer-events: none; font-weight: 500;">v02.04.04</div>
 
     <script src="app.js"></script>
 </body>

@@ -457,3 +457,59 @@ input[type="text"]::placeholder {
     pointer-events: none;
     font-weight: 500;
 }
+
+.info-tooltip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: help;
+    color: var(--primary);
+}
+
+.info-tooltip i {
+    font-size: 2vmin;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    opacity: 0;
+    width: 25vw;
+    background-color: var(--card-bg);
+    color: var(--text-main);
+    text-align: left;
+    border-radius: 1vmin;
+    padding: 1.5vh 1.5vw;
+    position: absolute;
+    z-index: 100;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: var(--shadow-hover);
+    border: 1px solid var(--border-color);
+    font-size: 1.5vmin;
+    font-weight: 500;
+    transition: opacity 0.3s, visibility 0.3s;
+    pointer-events: none;
+    line-height: 1.5;
+}
+
+.tooltip-text strong {
+    color: var(--primary);
+}
+
+.tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 0.8vw;
+    border-style: solid;
+    border-color: var(--card-bg) transparent transparent transparent;
+}
+
+.info-tooltip:hover .tooltip-text,
+.info-tooltip:active .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
