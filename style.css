@@ -474,7 +474,7 @@ input[type="text"]::placeholder {
     visibility: hidden;
     opacity: 0;
     width: 25vw;
-    background-color: var(--card-bg);
+    background-color: #E5E7EB;
     color: var(--text-main);
     text-align: left;
     border-radius: 1vmin;
@@ -505,7 +505,7 @@ input[type="text"]::placeholder {
     transform: translateX(-50%);
     border-width: 0.8vw;
     border-style: solid;
-    border-color: var(--card-bg) transparent transparent transparent;
+    border-color: #E5E7EB transparent transparent transparent;
 }
 
 .info-tooltip:hover .tooltip-text,
