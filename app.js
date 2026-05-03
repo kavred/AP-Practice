@@ -91,7 +91,6 @@ const controlsArea = document.getElementById('controlsArea');
 const modeSelect = document.getElementById('modeSelect');
 const periodSelect = document.getElementById('periodSelect');
 const startBtn = document.getElementById('startBtn');
-const successNotification = document.getElementById('successNotification');
 
 const timerText = document.getElementById('timerText');
 const scoreText = document.getElementById('scoreText');
@@ -337,16 +336,10 @@ function showHint() {
     answerInput.focus();
 }
 
-// Adaptive 5 Second Notification logic
+// Adaptive notification logic
 function triggerAdaptiveWin() {
     clearInterval(timerInterval);
-    successNotification.classList.add('show');
-    
-    // Hold banner for 5 seconds
-    setTimeout(() => {
-        successNotification.classList.remove('show');
-        endStudyAdaptive();
-    }, 5000);
+    endStudyAdaptive();
 }
 
 // End Game Normal
@@ -373,7 +366,6 @@ function showStartScreen() {
     topBar.classList.add('hidden');
     flashcardArea.classList.add('hidden');
     controlsArea.classList.add('hidden');
-    successNotification.classList.remove('show');
 }
 
 // Event Listeners
