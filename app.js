@@ -167,7 +167,10 @@ function init() {
         adaptiveUnintroduced = pool;
         adaptiveActivePool = [];
         
-        // Grab the single first item to start!
+        // Grab the first two items to start!
+        if (adaptiveUnintroduced.length > 0) {
+            adaptiveActivePool.push(adaptiveUnintroduced.shift());
+        }
         if (adaptiveUnintroduced.length > 0) {
             adaptiveActivePool.push(adaptiveUnintroduced.shift());
         }
