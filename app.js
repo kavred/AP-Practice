@@ -126,7 +126,17 @@ function init() {
     
     let filteredEvents = eventsData;
     if (selectedPeriod !== 'all') {
-        filteredEvents = eventsData.filter(e => e.period === selectedPeriod);
+        if (selectedPeriod.startsWith('set-')) {
+            const setIndex = parseInt(selectedPeriod.replace('set-', '')) - 1;
+            const sortedEvents = [...eventsData].sort((a, b) => {
+                const yearA = parseInt(a.year.match(/\d+/)[0]);
+                const yearB = parseInt(b.year.match(/\d+/)[0]);
+                return yearA - yearB;
+            });
+            filteredEvents = sortedEvents.slice(setIndex * 5, setIndex * 5 + 5);
+        } else {
+            filteredEvents = eventsData.filter(e => e.period === selectedPeriod);
+        }
     }
     
     startTime = Date.now();
@@ -374,3 +384,20 @@ answerInput.addEventListener('keypress', (e) => {
 hintBtn.addEventListener('click', showHint);
 restartBtn.addEventListener('click', showStartScreen);
 homeBtn.addEventListener('click', showStartScreen);
+
+// Populate mini sets
+const sortedForSets = [...eventsData].sort((a, b) => {
+    const yearA = parseInt(a.year.match(/\d+/)[0]);
+    const yearB = parseInt(b.year.match(/\d+/)[0]);
+    return yearA - yearB;
+});
+const numSets = Math.ceil(sortedForSets.length / 5);
+const optGroup = document.createElement('optgroup');
+optGroup.label = "Mini Sets (5 Terms Each)";
+for (let i = 0; i < numSets; i++) {
+    const option = document.createElement('option');
+    option.value = `set-${i + 1}`;
+    option.textContent = `Set ${i + 1}`;
+    optGroup.appendChild(option);
+}
+periodSelect.appendChild(optGroup);
