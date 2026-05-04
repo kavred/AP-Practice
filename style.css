@@ -223,6 +223,22 @@ input[type="text"]::placeholder {
     box-shadow: 0 1vh 1.5vh -0.3vh rgba(0,0,0,0.1);
 }
 
+.btn-flag {
+    background: white;
+    color: var(--text-muted);
+    box-shadow: var(--shadow-soft);
+    padding: 2vh 3vw;
+}
+
+.btn-flag:hover {
+    color: var(--error);
+    box-shadow: 0 1vh 1.5vh -0.3vh rgba(0,0,0,0.1);
+}
+
+.btn-flag.active {
+    color: var(--error);
+}
+
 .btn-end {
     background: white;
     color: var(--error);

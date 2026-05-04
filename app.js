@@ -101,6 +101,8 @@ const answerInput = document.getElementById('answerInput');
 const hintDisplay = document.getElementById('hintDisplay');
 const hintBtn = document.getElementById('hintBtn');
 const checkBtn = document.getElementById('checkBtn');
+const flagBtn = document.getElementById('flagBtn');
+let flaggedItems = JSON.parse(localStorage.getItem('apHistoryFlags') || '[]');
 const endSessionBtn = document.getElementById('endSessionBtn');
 const finishModal = document.getElementById('finishModal');
 const finalScoreText = document.getElementById('finalScoreText');
@@ -126,7 +128,14 @@ function init() {
     studyMode = selectedMode;
     
     let filteredEvents = eventsData;
-    if (selectedPeriod !== 'all') {
+    if (selectedPeriod === 'flagged') {
+        filteredEvents = eventsData.filter(e => flaggedItems.includes(e.event));
+        if (filteredEvents.length === 0) {
+            alert("You don't have any flagged questions yet! Flag some questions during practice first.");
+            showStartScreen();
+            return;
+        }
+    } else if (selectedPeriod !== 'all') {
         if (selectedPeriod.startsWith('set-')) {
             const setIndex = parseInt(selectedPeriod.replace('set-', '')) - 1;
             const sortedEvents = [...eventsData].sort((a, b) => {
@@ -273,6 +282,15 @@ function displayQuestion(item) {
         answerInput.classList.remove('correct', 'shake');
         hintDisplay.classList.remove('visible');
         hintDisplay.textContent = '';
+        
+        if (flaggedItems.includes(item.event)) {
+            flagBtn.classList.add('active');
+            flagBtn.innerHTML = '<i class="fa-solid fa-flag"></i>';
+        } else {
+            flagBtn.classList.remove('active');
+            flagBtn.innerHTML = '<i class="fa-regular fa-flag"></i>';
+        }
+        
         answerInput.focus();
     }, 200);
 }
@@ -397,9 +415,28 @@ function showStartScreen() {
     controlsArea.classList.add('hidden');
 }
 
+// Flag System
+function toggleFlag() {
+    const currentItem = (studyMode === 'normal' || studyMode === 'forever') ? studyList[currentIndex] : currentAdaptiveItem;
+    if (!currentItem) return;
+    
+    const index = flaggedItems.indexOf(currentItem.event);
+    if (index > -1) {
+        flaggedItems.splice(index, 1);
+        flagBtn.classList.remove('active');
+        flagBtn.innerHTML = '<i class="fa-regular fa-flag"></i>';
+    } else {
+        flaggedItems.push(currentItem.event);
+        flagBtn.classList.add('active');
+        flagBtn.innerHTML = '<i class="fa-solid fa-flag"></i>';
+    }
+    localStorage.setItem('apHistoryFlags', JSON.stringify(flaggedItems));
+}
+
 // Event Listeners
 startBtn.addEventListener('click', startActivity);
 checkBtn.addEventListener('click', checkAnswer);
+flagBtn.addEventListener('click', toggleFlag);
 endSessionBtn.addEventListener('click', endStudy);
 answerInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {

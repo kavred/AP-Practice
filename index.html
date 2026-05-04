@@ -50,6 +50,7 @@
                 <label for="periodSelect">Select a Period to Practice:</label>
                 <select id="periodSelect">
                     <option value="all">All Periods (1450 - present)</option>
+                    <option value="flagged">Flagged Questions 🚩</option>
                     <option value="1">Period 1 (1450 - 1648)</option>
                     <option value="2">Period 2 (1648 - 1815)</option>
                     <option value="3">Period 3 (1815 - 1914)</option>
@@ -92,6 +93,9 @@
         </main>
 
         <footer class="controls hidden" id="controlsArea">
+            <button class="btn btn-flag" id="flagBtn" title="Flag Question">
+                <i class="fa-regular fa-flag"></i>
+            </button>
             <button class="btn btn-hint" id="hintBtn" title="Get a Hint">
                 <i class="fa-solid fa-lightbulb"></i>
             </button>
@@ -113,7 +117,7 @@
         </div>
     </div>
     
-    <div style="position: absolute; bottom: 2vh; right: 2vw; font-size: 1.5vmin; color: var(--text-muted); opacity: 0.6; pointer-events: none; font-weight: 500;">v03.00.00</div>
+    <div style="position: absolute; bottom: 2vh; right: 2vw; font-size: 1.5vmin; color: var(--text-muted); opacity: 0.6; pointer-events: none; font-weight: 500;">v03.01.00</div>
 
     <script src="app.js"></script>
 </body>
