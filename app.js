@@ -190,9 +190,14 @@ function updateTimer() {
 }
 
 // Score display
-function updateScoreNormal() {
+function updateScoreNormal(justAnsweredCorrectly = false) {
+    let denominator = currentIndex;
+    if (!justAnsweredCorrectly && attemptsOnCurrent > 0) {
+        denominator = currentIndex + 1;
+    }
+    
     scoreText.textContent = `${score}/${studyList.length}`;
-    const percent = currentIndex === 0 ? 0 : Math.round((score / currentIndex) * 100);
+    const percent = denominator === 0 ? 0 : Math.round((score / denominator) * 100);
     percentText.textContent = `${percent}%`;
 }
 
@@ -281,7 +286,7 @@ function checkAnswer() {
         if (studyMode === 'normal') {
             if (attemptsOnCurrent === 0) score++;
             currentIndex++;
-            updateScoreNormal();
+            updateScoreNormal(true);
         } else {
             // Give them a point toward this cycle ONLY if there were zero mistakes or hints utilized on this attempt!
             if (attemptsOnCurrent === 0) {
@@ -306,6 +311,10 @@ function checkAnswer() {
         answerInput.classList.remove('shake');
         void answerInput.offsetWidth;
         answerInput.classList.add('shake');
+        
+        if (studyMode === 'normal') {
+            updateScoreNormal();
+        }
     }
 }
 
@@ -332,6 +341,10 @@ function showHint() {
             adaptiveActivePool.forEach(e => e.correctCount = 0);
         }
         attemptsOnCurrent = 1; 
+        
+        if (studyMode === 'normal') {
+            updateScoreNormal();
+        }
     }
     answerInput.focus();
 }
