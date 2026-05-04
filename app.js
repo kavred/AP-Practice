@@ -285,10 +285,10 @@ function displayQuestion(item) {
         
         if (flaggedItems.includes(item.event)) {
             flagBtn.classList.add('active');
-            flagBtn.innerHTML = '<i class="fa-solid fa-flag"></i>';
+            flagBtn.innerHTML = '<i class="fa-solid fa-flag"></i> Flagged';
         } else {
             flagBtn.classList.remove('active');
-            flagBtn.innerHTML = '<i class="fa-regular fa-flag"></i>';
+            flagBtn.innerHTML = '<i class="fa-regular fa-flag"></i> Flag';
         }
         
         answerInput.focus();
@@ -424,13 +424,14 @@ function toggleFlag() {
     if (index > -1) {
         flaggedItems.splice(index, 1);
         flagBtn.classList.remove('active');
-        flagBtn.innerHTML = '<i class="fa-regular fa-flag"></i>';
+        flagBtn.innerHTML = '<i class="fa-regular fa-flag"></i> Flag';
     } else {
         flaggedItems.push(currentItem.event);
         flagBtn.classList.add('active');
-        flagBtn.innerHTML = '<i class="fa-solid fa-flag"></i>';
+        flagBtn.innerHTML = '<i class="fa-solid fa-flag"></i> Flagged';
     }
     localStorage.setItem('apHistoryFlags', JSON.stringify(flaggedItems));
+    answerInput.focus();
 }
 
 // Event Listeners
