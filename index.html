@@ -35,13 +35,15 @@
                             <strong>Normal:</strong> Standard randomized testing.<br>
                             <strong>Random Adaptive:</strong> Rigorous loop. Must correctly answer old & newest term twice without hints/mistakes before adding more.<br>
                             <strong>Chronological Adaptive:</strong> Same rigors as Random, but introducing new dates purely in timeline order.<br>
-                            <strong>Forever:</strong> Endless randomized testing. Keeps looping questions until you manually end the session.
+                            <strong>Forever:</strong> Endless randomized testing. Keeps looping questions until you manually end the session.<br>
+                            <strong>Disappearing:</strong> Endless randomized testing. Questions disappear from the set once answered correctly on the first try 3 separate times.
                         </div>
                     </div>
                 </label>
                 <select id="modeSelect">
                     <option value="normal">Normal</option>
                     <option value="forever">Forever Mode</option>
+                    <option value="disappearing">Disappearing Mode</option>
                     <option value="adaptive">Random Adaptive</option>
                     <option value="chronological-adaptive">Chronological Adaptive</option>
                 </select>
@@ -117,7 +119,7 @@
         </div>
     </div>
     
-    <div style="position: absolute; bottom: 2vh; right: 2vw; font-size: 1.5vmin; color: var(--text-muted); opacity: 0.6; pointer-events: none; font-weight: 500;">v03.01.01</div>
+    <div style="position: absolute; bottom: 2vh; right: 2vw; font-size: 1.5vmin; color: var(--text-muted); opacity: 0.6; pointer-events: none; font-weight: 500;">v03.02.00</div>
 
     <script src="app.js"></script>
 </body>

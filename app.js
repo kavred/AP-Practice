@@ -165,6 +165,10 @@ function init() {
         
         if (studyMode === 'forever') endSessionBtn.classList.remove('hidden');
         else endSessionBtn.classList.add('hidden');
+    } else if (studyMode === 'disappearing') {
+        endSessionBtn.classList.remove('hidden');
+        adaptiveActivePool = shuffle(filteredEvents).map(e => ({ ...e, correctCount: 0 }));
+        updateScoreDisappearing();
     } else {
         endSessionBtn.classList.add('hidden');
         // Prepare adaptive logic structs
@@ -221,6 +225,14 @@ function updateScoreNormal(justAnsweredCorrectly = false) {
     percentText.textContent = `${percent}%`;
 }
 
+function updateScoreDisappearing() {
+    const total = adaptiveActivePool.length;
+    const remaining = adaptiveActivePool.filter(e => e.correctCount < 3).length;
+    scoreText.textContent = `Remaining: ${remaining} / Total: ${total}`;
+    const percent = total === 0 ? 0 : Math.round(((total - remaining) / total) * 100);
+    percentText.textContent = `${percent}%`;
+}
+
 function updateScoreAdaptive() {
     const total = adaptiveActivePool.length + adaptiveUnintroduced.length;
     const learned = Math.max(0, adaptiveActivePool.length - 1);
@@ -242,6 +254,17 @@ function loadQuestion() {
         }
         const currentItem = studyList[currentIndex];
         displayQuestion(currentItem);
+    } else if (studyMode === 'disappearing') {
+        let neededItems = adaptiveActivePool.filter(e => e.correctCount < 3);
+        
+        if (neededItems.length === 0) {
+            triggerAdaptiveWin();
+            return;
+        }
+        
+        const randomIndex = Math.floor(Math.random() * neededItems.length);
+        currentAdaptiveItem = neededItems[randomIndex];
+        displayQuestion(currentAdaptiveItem);
     } else {
         let neededItems = adaptiveActivePool.filter(e => e.correctCount < 2);
         
@@ -320,6 +343,11 @@ function checkAnswer() {
             if (attemptsOnCurrent === 0) score++;
             currentIndex++;
             updateScoreNormal(true);
+        } else if (studyMode === 'disappearing') {
+            if (attemptsOnCurrent === 0) {
+                currentAdaptiveItem.correctCount++;
+            }
+            updateScoreDisappearing();
         } else {
             // Give them a point toward this cycle ONLY if there were zero mistakes or hints utilized on this attempt!
             if (attemptsOnCurrent === 0) {
@@ -335,7 +363,7 @@ function checkAnswer() {
         }, 600);
         
     } else {
-        if (studyMode !== 'normal' && studyMode !== 'forever' && attemptsOnCurrent === 0) {
+        if (studyMode !== 'normal' && studyMode !== 'forever' && studyMode !== 'disappearing' && attemptsOnCurrent === 0) {
             // A wrong answer causes the ENTIRE loop to reset for strict memory locking
             adaptiveActivePool.forEach(e => e.correctCount = 0);
         }
@@ -369,7 +397,7 @@ function showHint() {
     hintDisplay.classList.add('visible');
     
     if (attemptsOnCurrent === 0) {
-        if (studyMode !== 'normal' && studyMode !== 'forever') {
+        if (studyMode !== 'normal' && studyMode !== 'forever' && studyMode !== 'disappearing') {
             // Relying on a hint also resets the entire loop
             adaptiveActivePool.forEach(e => e.correctCount = 0);
         }
