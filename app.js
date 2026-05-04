@@ -68,8 +68,9 @@ function shuffle(array) {
 // Global State
 let studyMode = 'normal';
 
-// Normal State Elements
+// Normal/Forever State Elements
 let studyList = [];
+let baseStudyList = [];
 let currentIndex = 0;
 let score = 0;
 
@@ -100,6 +101,7 @@ const answerInput = document.getElementById('answerInput');
 const hintDisplay = document.getElementById('hintDisplay');
 const hintBtn = document.getElementById('hintBtn');
 const checkBtn = document.getElementById('checkBtn');
+const endSessionBtn = document.getElementById('endSessionBtn');
 const finishModal = document.getElementById('finishModal');
 const finalScoreText = document.getElementById('finalScoreText');
 const finalTimeText = document.getElementById('finalTimeText');
@@ -145,12 +147,17 @@ function init() {
     clearInterval(timerInterval);
     timerInterval = setInterval(updateTimer, 1000);
     
-    if (studyMode === 'normal') {
-        studyList = shuffle(filteredEvents);
+    if (studyMode === 'normal' || studyMode === 'forever') {
+        baseStudyList = filteredEvents;
+        studyList = shuffle([...baseStudyList]);
         currentIndex = 0;
         score = 0;
         updateScoreNormal();
+        
+        if (studyMode === 'forever') endSessionBtn.classList.remove('hidden');
+        else endSessionBtn.classList.add('hidden');
     } else {
+        endSessionBtn.classList.add('hidden');
         // Prepare adaptive logic structs
         let pool = [];
         if (studyMode === 'chronological-adaptive') {
@@ -196,7 +203,11 @@ function updateScoreNormal(justAnsweredCorrectly = false) {
         denominator = currentIndex + 1;
     }
     
-    scoreText.textContent = `${score}/${studyList.length}`;
+    if (studyMode === 'forever') {
+        scoreText.textContent = `${score}/${denominator}`;
+    } else {
+        scoreText.textContent = `${score}/${studyList.length}`;
+    }
     const percent = denominator === 0 ? 0 : Math.round((score / denominator) * 100);
     percentText.textContent = `${percent}%`;
 }
@@ -211,10 +222,14 @@ function updateScoreAdaptive() {
 
 // Load Question
 function loadQuestion() {
-    if (studyMode === 'normal') {
+    if (studyMode === 'normal' || studyMode === 'forever') {
         if (currentIndex >= studyList.length) {
-            endStudy();
-            return;
+            if (studyMode === 'forever') {
+                studyList = studyList.concat(shuffle([...baseStudyList]));
+            } else {
+                endStudy();
+                return;
+            }
         }
         const currentItem = studyList[currentIndex];
         displayQuestion(currentItem);
@@ -273,7 +288,7 @@ function checkAnswer() {
         return;
     }
 
-    const currentItem = studyMode === 'normal' ? studyList[currentIndex] : currentAdaptiveItem;
+    const currentItem = (studyMode === 'normal' || studyMode === 'forever') ? studyList[currentIndex] : currentAdaptiveItem;
     
     const isCorrect = currentItem.accepted ? 
                         currentItem.accepted.includes(userInput) : 
@@ -283,7 +298,7 @@ function checkAnswer() {
         answerInput.classList.add('correct');
         answerInput.classList.remove('shake');
         
-        if (studyMode === 'normal') {
+        if (studyMode === 'normal' || studyMode === 'forever') {
             if (attemptsOnCurrent === 0) score++;
             currentIndex++;
             updateScoreNormal(true);
@@ -302,7 +317,7 @@ function checkAnswer() {
         }, 600);
         
     } else {
-        if (studyMode !== 'normal' && attemptsOnCurrent === 0) {
+        if (studyMode !== 'normal' && studyMode !== 'forever' && attemptsOnCurrent === 0) {
             // A wrong answer causes the ENTIRE loop to reset for strict memory locking
             adaptiveActivePool.forEach(e => e.correctCount = 0);
         }
@@ -312,7 +327,7 @@ function checkAnswer() {
         void answerInput.offsetWidth;
         answerInput.classList.add('shake');
         
-        if (studyMode === 'normal') {
+        if (studyMode === 'normal' || studyMode === 'forever') {
             updateScoreNormal();
         }
     }
@@ -320,7 +335,7 @@ function checkAnswer() {
 
 // Hint System
 function showHint() {
-    const currentItem = studyMode === 'normal' ? studyList[currentIndex] : currentAdaptiveItem;
+    const currentItem = (studyMode === 'normal' || studyMode === 'forever') ? studyList[currentIndex] : currentAdaptiveItem;
     hintsUsed++;
     
     let hintText = "";
@@ -336,13 +351,13 @@ function showHint() {
     hintDisplay.classList.add('visible');
     
     if (attemptsOnCurrent === 0) {
-        if (studyMode !== 'normal') {
+        if (studyMode !== 'normal' && studyMode !== 'forever') {
             // Relying on a hint also resets the entire loop
             adaptiveActivePool.forEach(e => e.correctCount = 0);
         }
         attemptsOnCurrent = 1; 
         
-        if (studyMode === 'normal') {
+        if (studyMode === 'normal' || studyMode === 'forever') {
             updateScoreNormal();
         }
     }
@@ -355,10 +370,11 @@ function triggerAdaptiveWin() {
     endStudyAdaptive();
 }
 
-// End Game Normal
+// End Game Normal/Forever
 function endStudy() {
     clearInterval(timerInterval);
-    finalScoreText.textContent = `${score}/${studyList.length} (${Math.round((score / studyList.length) * 100)}%)`;
+    const total = studyMode === 'forever' ? currentIndex : studyList.length;
+    finalScoreText.textContent = `${score}/${total} (${total === 0 ? 0 : Math.round((score / total) * 100)}%)`;
     finalTimeText.textContent = timerText.textContent;
     finishModal.classList.add('active');
 }
@@ -384,6 +400,7 @@ function showStartScreen() {
 // Event Listeners
 startBtn.addEventListener('click', startActivity);
 checkBtn.addEventListener('click', checkAnswer);
+endSessionBtn.addEventListener('click', endStudy);
 answerInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         checkAnswer();
