@@ -166,7 +166,7 @@ function init() {
         if (studyMode === 'forever') endSessionBtn.classList.remove('hidden');
         else endSessionBtn.classList.add('hidden');
     } else if (studyMode === 'disappearing') {
-        endSessionBtn.classList.remove('hidden');
+        endSessionBtn.classList.add('hidden');
         adaptiveActivePool = shuffle(filteredEvents).map(e => ({ ...e, correctCount: 0 }));
         updateScoreDisappearing();
     } else {
